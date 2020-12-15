@@ -2,32 +2,32 @@
 
 # Postman-mockserver (PMS)
 Postman mock server (following called PMS) is a simply console application that starts a server which reads postman collection 
-configuration and emulates a mock server. Postman does support this and more features with there 
+configuration and emulates a mock server. Postman supports all PMS functions and more features with their 
 [mock server](https://learning.postman.com/docs/designing-and-developing-your-api/mocking-data/setting-up-mock/).
-The postman mock service has some limitations that this console application help you to overcome 
+The official postman service has some limitations that PMS helps you to overcome 
 (e.g., number of request, avoid external dependencies, instability etc)
 
 ## Modes
 You can use this PMS in two different modes, **static** or **online**. In the (default) static mode you will pass a
 postman-collection export file. In the online mode you can add a postman api key, and the server will fetch the
-postman-collection configuration by itself. In the online mode you can use the postman webhooks to get notify when a 
+postman-collection configuration by itself. In the online mode you can use the postman webhooks to be notified when a 
 collection in your postman UI has been changed.
 
 
 ## Quickstart (Docker)
-As quickstart we recommend using the pre build docker container. If you prefer to use server without docker you will
+To quickstart we recommend using the pre build docker container. If you prefer to use PMS without docker you will
 find the needed instructions at the [Native](#native) section. You can find the docker on 
 [dockerhub](https://hub.docker.com/repository/docker/dumeni/postman-mockserver)
 
 ### Static mode
 The static mode serves a postman-export file ([how to get this file](#get-postman-collection-export-file)). 
-Run the PMS-docker container with following command
+Run the PMS-docker container with the following command
 ```docker run -v /path/to/postman/collection/export.json:/app/config/collection.json -p 8080:8080 postman-mockserver:latest```.
 You should see that PMS is starting to listen on port 8080. The PMS logs (in trace log mode)
 all configured mocks in the console output. If you can't see any mocks please make sure you have 
 added mocks in your [collection](#add-mocks-in-postman-ui).
 
-You can find in the [static section]() more possible parameters or configurations for the static mode. To override the
+In the [static section]() you can find more possible parameters or configurations for the static mode. To override the
 config file simply mount a yaml file into `````/app/config/config.yaml````` of the docker container.
 
 ### Online mode
@@ -37,7 +37,7 @@ and always access the newest mocks. For the online mode you need to [get](#get-p
 Use this command to start the docker container in the online mode: 
 ``````docker run -p 8080:8080 postman-mockserver:latest "online -t <your token>"``````
 
-If you like to get notified if the postman collection has bin update through your postman UI you need to configure a 
+If you like to get notified when the postman collection has been updated through your postman UI you need to configure a 
 [webhook](#register-postman-webhook). Otherwise, you need to restart your PMS each time postman has been updated 
 to fetch the newest mocks from the postman server.
 
@@ -54,7 +54,7 @@ to compile it by your own.
 
 
 ## PMS configuration
-All of the configuration settings in the configuration file can be specified either in the configuration file 
+All of the configuration settings can be specified either in the configuration file 
 or in an environment variable. The environment variable overrides the equivalent option in the configuration file.
 Some configuration parameters can also be defined as start parameters. The start parameters will override configuration
 file as well as the environment variables.
@@ -69,13 +69,13 @@ The structure of the yaml file is represented by a ```_``` character. For exampl
 ### Start parameters
 
 #### global
-To start the PMS you need to choice one mode with ```postman-mockserver static``` or ```postman-mockserver ònline```. 
-Default is the static mode. The following configurations are valid for both modes.
+To start the PMS you need to choose a mode with either ```postman-mockserver static``` or ```postman-mockserver ònline```. 
+The static mode is the default mode. The following configurations are valid for both modes.
 
-```--help``` you can find more information for all parameter.
+```--help``` you can find more information for all parameters.
 
-```--config``` PMS will lookup for a config file in ```$HOME/.pms/config.yaml``` if you like to override the default path you can do
-as showing in following example: ````postman-mockserver static --config /path/to/your/config.yaml````. 
+```--config``` PMS will lookup a config file in ```$HOME/.pms/config.yaml``` if you like to override the default path you can do
+as shown in the following example: ````postman-mockserver static --config /path/to/your/config.yaml````. 
 
 ```--port``` Change the default binding parameter. In case you use docker, make sure you expose the same port on 
 docker as you bind in your PMS instance.
@@ -88,11 +88,11 @@ docker as you bind in your PMS instance.
 
 
 ## Postman configuration ##
-In this section we try to provide the needed help for configure your postman as your PMS need it. Please note that some print screens
-or even descriptions may does not match to this documentation because postman can change their systems at any time.
+In this section we try to provide the needed help to configure your postman. Please note that some of the print screens
+or even descriptions in this documentation may differ from the postman because postman can change their systems at any time.
 
 ### Get postman-collection export file
-This file ist needed for a static mode of the mockserver. You can export the file in the postman client:
+This file is needed for a static mode of the mockserver. You can export the file in the postman client:
 
 ![](./imgs/get-collection.png)
 
@@ -102,19 +102,19 @@ does not know what it should return on a request.
 
 ![](./imgs/add-mock.png)
 
-In the mock path you should only provide the path that you intend to request, without hostname/servername. 
+In the mock path you should only write the path that you intend to request, without hostname/servername. 
 
 ![](./imgs/add-mock-2.png)
 
-- At the moment only 1:1 URL matching are supported. Variables e.g ```{{customerId}}``` are not supported. 
+- At the moment only 1:1 URL matching is supported. Variables e.g ```{{customerId}}``` are not supported. 
 - The postman matching roles 
 described [here](https://learning.postman.com/docs/postman/mock-servers/matching-algorithm/) are also not supported right now.
 - the HTTP verb is considered.
 
 
 ### Get Postman API Token
-You can get a new token to access postman integration api [here](https://go.postman.co/integrations/services/pm_pro_api)
-this parameter dose you need to pass as on a startup in the online mode.
+You can get a new token to access postman integration api [here](https://go.postman.co/integrations/services/pm_pro_api).
+You need this token for the startup in the online mode.
 
 ### Register postman webhook
 postman documentation [webhook](https://learning.postman.com/docs/integrations/webhooks/)
