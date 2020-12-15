@@ -1,0 +1,21 @@
+#Excample config file
+name: "test"
+logging:
+  level: "info"
+  jsonLogging: false
+#static mode for serve from a static file. Online mode to catch online the mock configuration
+mode: "static"
+port: 8080
+postman:
+  token: ""
+  url: "https://api.getpostman.com/"
+  #use the keyword 'all' to load all collections to the PMS or use the UID of the collection(s) (as list) with the collections you like to load
+  collections:
+    - "all"
+#############################################################################
+  # this configuration only suits if postman mock is started in static mode
+static:
+  # is container watching for change on static files. As soon as the file changes the collection will be reloaded
+  watchFile: true
+  # path to the collection file. This property is required in the static mode.
+  path: "/app/config/collection.json"

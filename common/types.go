@@ -1,12 +1,13 @@
 package common
 
 type Mock struct {
-	Path string
-	Method HttpMethod
-	Name   string
-	Body   string
-	Header [] Header
-	Code int
+	RawPath string
+	Method  HttpMethod
+	Name    string
+	Body    string
+	Header  []Header
+	Code    int
+	Path    []string
 }
 
 type Header struct {
@@ -31,3 +32,22 @@ const(
 	OPTIONS HttpMethod = "OPTIONS"
 	HEAD HttpMethod = "HEAD"
 )
+
+func (m HttpMethod) String() string {
+	switch m {
+	case GET:
+		return "GET"
+	case POST:
+		return "POST"
+	case PUT:
+		return "PUT"
+	case DELETE:
+		return "DELETE"
+	case OPTIONS:
+		return "OPTIONS"
+	case HEAD:
+		return "HEAD"
+	default:
+		return ""
+	}
+}

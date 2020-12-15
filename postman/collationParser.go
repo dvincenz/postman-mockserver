@@ -10,32 +10,35 @@ import (
 
 )
 
-func ReadPostmanFile(path string) map[string]Mock {
+func readPostmanFile(path string) map[string]Mock {
 	jsonFile, err := os.Open(path)
 	if err != nil {
-		log.Err(err).Msgf("ops, failed to pen file " + path)
+		log.Err(err).Msgf("ops, failed to open file " + path)
+		return make(map[string]Mock)
 	}
-	log.Debug().Msg("Successfully Opened json file, read requests...")
 	defer jsonFile.Close()
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
-	return ParsePostmanCollationMock(byteValue)
+	return parsePostmanCollectionMock(byteValue)
 }
 
-func ParsePostmanCollationMock(payload []byte)map[string]Mock{
-	var collation postmanCollation
-	json.Unmarshal(payload, &collation)
-
+func parsePostmanCollectionMock(payload []byte)map[string]Mock{
+	var collection postmanCollection
+	json.Unmarshal(payload, &collection)
+	if collection.Collection.Info.PostmanID == "" {
+		log.Info().Msg("No postman collection object in json found - search for items in json root")
+		json.Unmarshal(payload, &collection.Collection)
+	}
 	mocks := make(map[string]Mock)
-	for i := 0; i < len(collation.Collection.Item); i++ {
-		mocks = appendMap(mocks, getAllRequest(collation.Collection.Item[i], 0))
+	for i := 0; i < len(collection.Collection.Item); i++ {
+		mocks = appendMap(mocks, getAllRequest(collection.Collection.Item[i], 0))
 	}
 	return mocks
 }
 
 
 func getAllRequest(item item, level int) map[string]Mock{
-	log.Trace().Msg(strings.Repeat(" ", level)  + item.Name)
+	log.Trace().Msg("Mock: " + strings.Repeat(" ", level)  + item.Name)
 	mocks := make(map[string]Mock)
 	mocks = appendMap(mocks, getMocks(item.Response))
 
