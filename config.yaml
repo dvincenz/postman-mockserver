@@ -6,6 +6,7 @@ logging:
 #static mode for serve from a static file. Online mode to catch online the mock configuration
 mode: "static"
 port: 8080
+listenHost: "0.0.0.0"
 postman:
   token: ""
   url: "https://api.getpostman.com/"

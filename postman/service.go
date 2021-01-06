@@ -57,8 +57,8 @@ func createServer(){
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		postmanRouter(w, r)
 	})
-	log.Info().Msg("start to listen http://localhost:"+ port)
-	http.ListenAndServe("localhost:" +  port, nil)
+	log.Info().Msg("start to listen http://" + viper.GetString("listenHost") + ":"+ port)
+	http.ListenAndServe(viper.GetString("listenHost") + ":" +  port, nil)
 }
 
 
@@ -124,7 +124,7 @@ func enableCors(w *http.ResponseWriter) {
 func fileWatcher (executor func(path string), path string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		log.Fatal().Msgf("error: ", err)
+		log.Fatal().Msgf("error: %s", err)
 	}
 	defer watcher.Close()
 	done := make(chan bool)
@@ -138,20 +138,20 @@ func fileWatcher (executor func(path string), path string) {
 				}
 				if event.Op&fsnotify.Write == fsnotify.Write {
 					executor(path)
-					log.Info().Msgf("modified file execute ", event.Name)
+					log.Info().Msgf("modified file execute %s", event.Name)
 				}
 			case err, ok := <-watcher.Errors:
 				if !ok {
 					return
 				}
-				log.Error().Msgf("error reloading event:", err)
+				log.Error().Msgf("error reloading event: %s", err)
 			}
 		}
 	}()
 
 	err = watcher.Add(path)
 	if err != nil {
-		log.Fatal().Msgf("error reloading file, you may need to restart the application", err)
+		log.Fatal().Msgf("error reloading file, you may need to restart the application %s", err)
 	}
 	<-done
 
