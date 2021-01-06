@@ -1,5 +1,3 @@
-
-
 # Postman-mockserver (PMS)
 Postman mock server (following called PMS) is a simply console application that starts a server which reads postman collection 
 configuration and emulates a mock server. Postman supports all PMS functions and more features with their 
