@@ -6,9 +6,9 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
-	"html"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -83,11 +83,13 @@ func  postmanRouter(w http.ResponseWriter, r *http.Request) {
 		handleOptionsRequest(&w)
 		return
 	}
-	path := strings.ToLower(r.Method + html.EscapeString(r.URL.Path))
-	log.Trace().Msg("requested path: " + path)
-	if html.EscapeString(r.URL.RawQuery) != "" {
-		path = path + "?" + strings.ToLower(html.EscapeString(r.URL.RawQuery))
+	urlDecoded, err := url.QueryUnescape(r.URL.String())
+	if err != nil {
+		log.Error().Msg(err.Error())
+		return
 	}
+	path := strings.ToLower(r.Method + urlDecoded)
+	log.Trace().Msg("requested path: " + path)
 	if mock, ok := mocks[path]; ok {
 		w.Header().Set("Content-Type", "application/json")
 		for _, header := range mock.Header {
